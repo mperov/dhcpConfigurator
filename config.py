@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Author: Maxim Perov (mperov@okbsapr.ru)
+
 import gtk, sys, os, gobject
 
 from pyparsing import *
