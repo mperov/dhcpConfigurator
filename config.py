@@ -410,7 +410,7 @@ class Main:
 ################ FIRST STEP FOR MAKING TEST OF INPUT DATA ##############
 #      if s_host == '':
 #        return
-      # detecting existing dict of s_host
+# detecting existing dict of s_host
 #      if self.our_parser.d_hosts[s_host] == None:
 #        self.our_parser.d_hosts[s_host] = { }
         
