@@ -1,0 +1,839 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkListStore" id="for_combo">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="for_general">
+    <columns>
+      <!-- column-name column1 -->
+      <column type="gchararray"/>
+      <!-- column-name column2 -->
+      <column type="gchararray"/>
+      <!-- column-name column3 -->
+      <column type="gchararray"/>
+      <!-- column-name column4 -->
+      <column type="gchararray"/>
+      <!-- column-name column5 -->
+      <column type="gchararray"/>
+      <!-- column-name column6 -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes"> </col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="for_hosts">
+    <columns>
+      <!-- column-name column1 -->
+      <column type="gchararray"/>
+      <!-- column-name column2 -->
+      <column type="gchararray"/>
+      <!-- column-name column4 -->
+      <column type="gchararray"/>
+      <!-- column-name column3 -->
+      <column type="gchararray"/>
+      <!-- column-name column5 -->
+      <column type="gchararray"/>
+      <!-- column-name column6 -->
+      <column type="gchararray"/>
+      <!-- column-name column7 -->
+      <column type="gchararray"/>
+      <!-- column-name column8 -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+        <col id="7" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+        <col id="7" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+        <col id="7" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+        <col id="7" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+        <col id="7" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+        <col id="7" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+        <col id="7" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+        <col id="7" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+        <col id="7" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+        <col id="7" translatable="yes"></col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="for_hosts_fa">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="for_hosts_range">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="for_subnets">
+    <columns>
+      <!-- column-name column1 -->
+      <column type="gchararray"/>
+      <!-- column-name column2 -->
+      <column type="gchararray"/>
+      <!-- column-name column3 -->
+      <column type="gchararray"/>
+      <!-- column-name column4 -->
+      <column type="gchararray"/>
+      <!-- column-name column5 -->
+      <column type="gchararray"/>
+      <!-- column-name column6 -->
+      <column type="gchararray"/>
+      <!-- column-name column7 -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+      </row>
+      <row>
+        <col id="0" translatable="yes"></col>
+        <col id="1" translatable="yes"></col>
+        <col id="2" translatable="yes"></col>
+        <col id="3" translatable="yes"></col>
+        <col id="4" translatable="yes"></col>
+        <col id="5" translatable="yes"></col>
+        <col id="6" translatable="yes"></col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="for_subnets_range">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkWindow" id="mainwindow">
+    <property name="visible">True</property>
+    <property name="resizable">False</property>
+    <property name="window_position">center</property>
+    <signal name="destroy" handler="on_exit"/>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkHBox" id="hbox1">
+            <property name="visible">True</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <object class="GtkButton" id="button2">
+                <property name="label" translatable="yes">save</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="pressed" handler="on_save"/>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button3">
+                <property name="label" translatable="yes">start</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="pressed" handler="on_start"/>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button4">
+                <property name="label" translatable="yes">restart</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="pressed" handler="on_restart"/>
+              </object>
+              <packing>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button5">
+                <property name="label" translatable="yes">stop</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="pressed" handler="on_stop"/>
+              </object>
+              <packing>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button6">
+                <property name="label" translatable="yes">exit</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="pressed" handler="on_exit"/>
+              </object>
+              <packing>
+                <property name="position">5</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkVBox" id="vbox2">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="xalign">0.019999999552965164</property>
+                <property name="yalign">0.090000003576278687</property>
+                <property name="label" translatable="yes">general</property>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkTreeView" id="treeviewgeneral">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="model">for_general</property>
+                <property name="enable_grid_lines">both</property>
+                <property name="enable_tree_lines">True</property>
+                <child>
+                  <object class="GtkTreeViewColumn" id="generaltreeviewcolumn1">
+                    <property name="title">ddns-update-style</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="generalcellrenderertext1">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="generaltreeviewcolumn2">
+                    <property name="title">option domain-name</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="generalcellrenderertext2">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="generaltreeviewcolumn3">
+                    <property name="title">max-lease-time</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="generalcellrenderertext3">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">2</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="generaltreeviewcolumn4">
+                    <property name="title">default-lease-time</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="generalcellrenderertext4">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">3</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="generaltreeviewcolumn5">
+                    <property name="title">option domain-name-servers</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="generalcellrenderertext5">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">4</attribute>
+                      </attributes>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext1">
+                        <property name="text">&lt;-&gt;</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererCombo" id="generalcellrenderercombo5">
+                        <property name="editable">True</property>
+                        <property name="has_entry">False</property>
+                        <property name="text_column">0</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">4</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="generaltreeviewcolumn6">
+                    <property name="title">log-facility</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="generalcellrenderertext6">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">5</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkVBox" id="vbox3">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="label2">
+                <property name="visible">True</property>
+                <property name="xalign">0.019999999552965164</property>
+                <property name="yalign">0.090000003576278687</property>
+                <property name="label" translatable="yes">hosts</property>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkTreeView" id="treeviewhosts">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="model">for_hosts</property>
+                <property name="enable_grid_lines">both</property>
+                <property name="enable_tree_lines">True</property>
+                <child>
+                  <object class="GtkTreeViewColumn" id="hoststreeviewcolumn1">
+                    <property name="title">name</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="hostscellrenderertext1">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="hoststreeviewcolumn2">
+                    <property name="title">hardware ethernet</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="hostscellrenderertext2">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="hoststreeviewcolumn3">
+                    <property name="title">ddns-hostname</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="hostscellrenderertext3">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">2</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="hoststreeviewcolumn4">
+                    <property name="title">range</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext3">
+                        <property name="text">from</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText" id="hostscellrenderertext4_1">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">6</attribute>
+                      </attributes>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext4">
+                        <property name="text">to</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText" id="hostscellrenderertext4_2">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">7</attribute>
+                      </attributes>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext5">
+                        <property name="text">&lt;-&gt;</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererCombo" id="hostscellrenderercombo4">
+                        <property name="editable">True</property>
+                        <property name="has_entry">False</property>
+                        <property name="text_column">0</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">3</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="hoststreeviewcolumn5">
+                    <property name="title">fixed-address</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="hostscellrenderertext5">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">4</attribute>
+                      </attributes>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext2">
+                        <property name="text">&lt;-&gt;</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererCombo" id="hostscellrenderercombo5">
+                        <property name="editable">True</property>
+                        <property name="has_entry">False</property>
+                        <property name="text_column">0</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">4</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="hoststreeviewcolumn6">
+                    <property name="title">ddns-domainname</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="hostscellrenderertext6">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">5</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkVBox" id="vbox4">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="label3">
+                <property name="visible">True</property>
+                <property name="xalign">0.019999999552965164</property>
+                <property name="yalign">0.090000003576278687</property>
+                <property name="label" translatable="yes">subnets</property>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkTreeView" id="treeviewsubnets">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="model">for_subnets</property>
+                <property name="enable_grid_lines">both</property>
+                <property name="enable_tree_lines">True</property>
+                <child>
+                  <object class="GtkTreeViewColumn" id="subnetstreeviewcolumn1">
+                    <property name="title">name</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="subnetscellrenderertext1">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="subnetstreeviewcolumn2">
+                    <property name="title">netmask</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="subnetscellrenderertext2">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="subnetstreeviewcolumn3">
+                    <property name="title">range</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext6">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                        <property name="text">from</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText" id="subnetscellrenderertext3_1">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">5</attribute>
+                      </attributes>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext7">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                        <property name="text">to</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText" id="subnetscellrenderertext3_2">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">6</attribute>
+                      </attributes>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext9">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                        <property name="text">&lt;-&gt;</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererCombo" id="subnetscellrenderercombo3">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                        <property name="has_entry">False</property>
+                        <property name="text_column">0</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">2</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="subnetstreeviewcolumn4">
+                    <property name="title">default-lease-time</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="subnetscellrenderertext4">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">3</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="subnetstreeviewcolumn5">
+                    <property name="title">max-lease-time</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="subnetscellrenderertext5">
+                        <property name="background_gdk">#ffffffffffff</property>
+                        <property name="editable">True</property>
+                        <property name="foreground_gdk">#000000000000</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">4</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStatusbar" id="statusbar1">
+            <property name="visible">True</property>
+            <property name="spacing">2</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
