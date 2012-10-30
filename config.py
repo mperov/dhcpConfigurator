@@ -19,6 +19,29 @@ OPTION_TEXT_COMBOBOX = "your additions"
 NUMBER_HOSTS_RANGE = 4
 NUMBER_SUBNETS_RANGE = 3
 
+
+class Promt(Exception):
+  def __init__(self, value):
+    self.value = value
+    # Create new GTK dialog with all the fixings
+    prompt = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, value)
+    # Set title of dialog
+    prompt.set_title("Prompt")
+    # Show all widgets in prompt
+    prompt.show_all()
+    # Run dialog until user clicks OK
+    if prompt.run() == gtk.RESPONSE_OK:
+      # Destory prompt
+      prompt.destroy()
+'''
+try:
+  i = 0
+  if i == 0:
+    raise Promt('Division by zero!')
+except:
+  Nothing
+'''
+
 class Parser:
   digits = "0123456789"
   colon,semi,period,comma,lbrace,rbrace,quote = map(Literal,':;.,{}"')
@@ -329,7 +352,6 @@ class Main:
       for j in range(COUNT_COLUMN_HOSTS - 1):
         string = 'hoststreeviewcolumn' + str(j + 2)
         s_column_title = self.builder.get_object(string).get_title()
-
         if hosts_liststore[i][j+1].strip() != '' and hosts_liststore[i][j+1].strip() != OPTION_TEXT_COMBOBOX:
           if s_column_title == 'fixed-address' or s_column_title == 'range':
             d_hosts_param[ hosts_liststore[i][0] ][s_column_title] = self.our_parser.d_hosts[ hosts_liststore[i][0] ][s_column_title]
@@ -386,7 +408,6 @@ class Main:
         self.our_parser.d_hosts[s_host] == None
       except:
         self.our_parser.d_hosts[s_host] = { }
-      print l_tmp
       self.our_parser.d_hosts[s_host][s_column_title] = l_tmp
 
     if type_table == SUBNETS_TYPE_TABLE:
@@ -417,7 +438,6 @@ class Main:
         self.our_parser.d_subnets[s_sub] == None
       except:
         self.our_parser.d_subnets[s_sub] = { }
-      print l_tmp
       self.our_parser.d_subnets[s_sub][s_column_title] = l_tmp
 
   # this func is handler events of editing cells
@@ -428,6 +448,13 @@ class Main:
     iter_some = None
     b_srange_from = False
     b_srange_to = False
+
+    if column != 0 and model[row][0] == '':
+      if user_data != '' and user_data != OPTION_TEXT_COMBOBOX:
+        try:
+          raise Promt('You must add something to\n the first column!')
+        except:
+          return
 
     if type_table != GENERAL_TYPE_TABLE and user_data != '' and column == 0:
       # for adding a new item
@@ -576,11 +603,9 @@ class Main:
     if type_table == SUBNETS_TYPE_TABLE and column == 2:
       self.iter_combo_srange = iter_some
 
-############ TEST IT !!!!!!!!!!!!!!!!! ##################################
     if b_run == True or b_hrange_from == True or b_hrange_to == True or b_srange_from == True or b_srange_to == True:
       # memorizing data in common dictionary
       self.memorize_data_in_common_dict(row, column, model, combo_model, type_table)
-###########################################################################
 
     if user_data != '':
       # changing a cell
@@ -608,13 +633,13 @@ class Main:
       elif b_srange_to == True: # second cell of subnet's range
         model[row][COUNT_COLUMN_SUBNETS + 2 - 1] = user_data
         if model[row][column] != OPTION_TEXT_COMBOBOX:
-          model[row][column] = user_data + ' - ' + model[row][column].split('-')[1].strip()
+          model[row][column] = model[row][column].split('-')[0].strip() + ' - ' + user_data
         else:
           model[row][column] = OPTION_TEXT_COMBOBOX
 
       else: # other cell
         model[row][column] = user_data
-    elif b_run == True:
+    elif b_run == True or b_hrange_from == True or b_hrange_to == True or b_srange_from == True or b_srange_to == True:
       model[row][column] = OPTION_TEXT_COMBOBOX
     else:
       model[row][column] = ''
@@ -696,11 +721,8 @@ class Main:
             l_tmp_data = [ ]
             hosts_liststore[i][j] = OPTION_TEXT_COMBOBOX
 
-#          if i == 0:
-            # working with CellRendererCombo
+          # working with CellRendererCombo
           combo_model = self.builder.get_object("for_hosts_fa")
-#            for s_something in l_tmp_data:
-#              combo_model.append([s_something.strip()])
 
             # adding OPTION_TEXT_COMBOBOX
             # memorizing iterator of combo model to insert other items
@@ -920,7 +942,7 @@ class Main:
         self.iter_combo_fa = combo_model.append([OPTION_TEXT_COMBOBOX])
       if d_number_column[s_column_title][1] == "for_hosts_range":
         for l in range(len(l_tmp_data)):
-          if (l % 2) == 0:
+          if (l % 2) == 0 and l_tmp_data[l] != '':
             combo_model.append([l_tmp_data[l].strip() + ' - ' + l_tmp_data[l + 1].strip()])
         self.iter_combo_range = combo_model.append([OPTION_TEXT_COMBOBOX])
 
@@ -961,7 +983,7 @@ class Main:
       # and memorizing iterator of combo model to insert other items
       if d_number_column[s_column_title][1] == "for_subnets_range":
         for l in range(len(l_tmp_data)):
-          if (l % 2) == 0:
+          if (l % 2) == 0 and l_tmp_data[l] != '':
             combo_model.append([l_tmp_data[l].strip() + ' - ' + l_tmp_data[l + 1].strip()])
         self.iter_combo_srange = combo_model.append([OPTION_TEXT_COMBOBOX])
 
