@@ -50,7 +50,7 @@ class Parser:
   dnschars = Word(alphanums + '-') # characters permissible in DNS names
 
   mac = Combine(hexint + (":" + hexint) * 5)
-  ip = Combine(number + period + number + period + number + period + number)
+  ip = Combine(Word(nums) + ('.' + Word(nums))*3)
   ips = delimitedList(ip)
   hostname = dnschars
   domainname = dnschars + ZeroOrMore("." + dnschars)
@@ -69,6 +69,7 @@ class Parser:
   d_subnets = { }
   d_global_parameters = { }
 
+  
   def get_string_of_pattern_for_host(self, l_some, pattern):
     for s_word in l_some:
       grammar_word = pattern
@@ -235,7 +236,6 @@ class Main:
 
   def print_to_file(self, s_file_name, d_global_parameters, d_subnets, d_hosts):
     f_out = open(s_file_name,"w")
-
     # print global parameters
     f_out.write('\n\n')
     for key in d_global_parameters:
@@ -251,7 +251,7 @@ class Main:
         f_out.write(' ' + d_global_parameters[key] + ';')
       f_out.write('\n')
     f_out.write('\n\n')
-
+    
     # print d_subnets
     for key in d_subnets:
       d_ip_mask = key.split(':')
@@ -276,8 +276,7 @@ class Main:
         f_out.write('\n')
       f_out.write('}\n\n')
 
-
-    # print d_hosts 
+    # print d_hosts
     for key in d_hosts:
       f_out.write('host ' + key + ' {\n')
       for sub_key in d_hosts[key]:
@@ -352,9 +351,15 @@ class Main:
       for j in range(COUNT_COLUMN_HOSTS - 1):
         string = 'hoststreeviewcolumn' + str(j + 2)
         s_column_title = self.builder.get_object(string).get_title()
-        if hosts_liststore[i][j+1].strip() != '' and hosts_liststore[i][j+1].strip() != OPTION_TEXT_COMBOBOX:
+        if hosts_liststore[i][j + 1].strip() != '':
           if s_column_title == 'fixed-address' or s_column_title == 'range':
-            d_hosts_param[ hosts_liststore[i][0] ][s_column_title] = self.our_parser.d_hosts[ hosts_liststore[i][0] ][s_column_title]
+            if hosts_liststore[i][j+1].strip() != OPTION_TEXT_COMBOBOX:
+              d_hosts_param[ hosts_liststore[i][0] ][s_column_title] = self.our_parser.d_hosts[ hosts_liststore[i][0] ][s_column_title]
+            else:
+              try: # catching situation when it's empty and host_liststore has OPTION_TEXT_COMBOBOX
+                d_hosts_param[ hosts_liststore[i][0] ][s_column_title] = self.our_parser.d_hosts[ hosts_liststore[i][0] ][s_column_title]
+              except:
+                ''' nothing '''
           else:
             d_hosts_param[ hosts_liststore[i][0] ][s_column_title] = hosts_liststore[i][j+1]
       i = i + 1
@@ -370,11 +375,17 @@ class Main:
     while ( subnets_liststore[i][0].strip() != ''):
       d_subnets_param[ subnets_liststore[i][0] + ':' + subnets_liststore[i][1] ] = { }
       for j in range(COUNT_COLUMN_SUBNETS - 2):
-        string = 'subnetstreeviewcolumn' + str(j+3)
+        string = 'subnetstreeviewcolumn' + str(j + 3)
         s_column_title = self.builder.get_object(string).get_title()
         if subnets_liststore[i][j + 2].strip() != '':
           if s_column_title == 'range':
-            d_subnets_param[ subnets_liststore[i][0] + ':' + subnets_liststore[i][1] ][s_column_title] = self.our_parser.d_subnets[ subnets_liststore[i][0] + ':' + subnets_liststore[i][1] ][s_column_title]
+            if subnets_liststore[i][j + 2].strip() != OPTION_TEXT_COMBOBOX:
+              d_subnets_param[ subnets_liststore[i][0] + ':' + subnets_liststore[i][1] ][s_column_title] = self.our_parser.d_subnets[ subnets_liststore[i][0] + ':' + subnets_liststore[i][1] ][s_column_title]
+            else:
+              try:# catching situation when it's empty and subnets_liststore has OPTION_TEXT_COMBOBOX
+                d_subnets_param[ subnets_liststore[i][0] + ':' + subnets_liststore[i][1] ][s_column_title] = self.our_parser.d_subnets[ subnets_liststore[i][0] + ':' + subnets_liststore[i][1] ][s_column_title]
+              except:
+                ''' nothing '''
           else:
             d_subnets_param[ subnets_liststore[i][0] + ':' + subnets_liststore[i][1] ][s_column_title] = subnets_liststore[i][j + 2]
       i = i + 1
@@ -403,12 +414,14 @@ class Main:
 ################ FIRST STEP FOR MAKING TEST OF INPUT DATA ##############
       if s_host == '':
         return
-      # detecting existing dict of s_host
-      try:
-        self.our_parser.d_hosts[s_host] == None
-      except:
-        self.our_parser.d_hosts[s_host] = { }
-      self.our_parser.d_hosts[s_host][s_column_title] = l_tmp
+      if l_tmp:
+        # detecting existing dict of s_host
+        try:
+          if self.our_parser.d_hosts[s_host] == None:
+            self.our_parser.d_hosts[s_host] = { }
+        except:
+          self.our_parser.d_hosts[s_host] = { }
+        self.our_parser.d_hosts[s_host][s_column_title] = l_tmp
 
     if type_table == SUBNETS_TYPE_TABLE:
       s_sub = model[row][0] + ':' + model[row][1]
@@ -433,14 +446,220 @@ class Main:
 ################ FIRST STEP FOR MAKING TEST OF INPUT DATA ##############
       if s_sub == '':
         return
-      # detecting existing dict of s_host
-      try:
-        self.our_parser.d_subnets[s_sub] == None
-      except:
-        self.our_parser.d_subnets[s_sub] = { }
-      self.our_parser.d_subnets[s_sub][s_column_title] = l_tmp
 
-  # this func is handler events of editing cells
+      if l_tmp:
+        # detecting existing dict of s_host
+        try:
+          if self.our_parser.d_subnets[s_sub] == None:
+            self.our_parser.d_subnets[s_sub] = { }
+        except:
+          self.our_parser.d_subnets[s_sub] = { }
+        self.our_parser.d_subnets[s_sub][s_column_title] = l_tmp
+
+
+  
+  ''' This func is for fixed-address or option domain-name-servers.
+      It addes something to liststore and its cellcombobox.
+      This is only used by edited_table.
+  Keywords arduments:
+    model - model of liststore
+    combo_model - model of cellcombobox
+    row, column - coordinates of place in model of liststore
+    user_data - this is added by this func
+    iter_some - position of iterator of cellcombobox 
+  Returns:
+    iterator of cellcombobox '''
+  def add2table_liststore(self, model, combo_model, row, column, user_data, iter_some):
+    if model[row][column] == OPTION_TEXT_COMBOBOX and user_data != OPTION_TEXT_COMBOBOX:
+      if user_data != '':
+        # deleting OPTION_TEXT_COMBOBOX
+        combo_model.remove(iter_some)
+        combo_model.append([user_data])
+        # adding OPTION_TEXT_COMBOBOX
+        # memorizing iterator of combo model to insert other items
+        return combo_model.append([OPTION_TEXT_COMBOBOX])
+    else:
+      # finding our items
+      iter_tmp = combo_model.get_iter_first()
+      for k in range(len(combo_model)):
+        if combo_model.get_value(iter_tmp, 0) == model[row][column] and model[row][column] != OPTION_TEXT_COMBOBOX:
+          combo_model.remove(iter_tmp)
+          # deleting item when user enter empty string
+          if user_data != '':
+            # deleting OPTION_TEXT_COMBOBOX
+            combo_model.remove(iter_some)
+            combo_model.append([user_data])
+            # adding OPTION_TEXT_COMBOBOX
+            # memorizing iterator of combo model to insert other items
+            return combo_model.append([OPTION_TEXT_COMBOBOX])
+          break
+        else:
+          iter_tmp = combo_model.iter_next(iter_tmp)
+
+
+  ''' This func addes something to the first face cell of range and to cell for cellcombobox.
+      This is only used by edited_table.
+  Keywords arduments:
+    row, column - coordinates of place in model of liststore
+    model - model of liststore
+    user_data - this is added by this func
+    i_column_place - face coordinate of cell in model of liststore
+  Returns:
+    None '''
+  def add2table_for_ffc(self, row, column, model, user_data, i_column_place):
+    model[row][i_column_place + 1 - 1] = user_data
+    if model[row][column] != OPTION_TEXT_COMBOBOX:
+      model[row][column] = user_data + ' - ' + model[row][column].split('-')[1].strip()
+    else:
+      model[row][column] = OPTION_TEXT_COMBOBOX
+
+
+  ''' This func addes something to the second face cell of range and to cell for cellcombobox.
+      This is only used by edited_table.
+  Keywords arduments:
+    row, column - coordinates of place in model of liststore
+    model - model of liststore
+    user_data - this is added by this func
+    i_column_place - face coordinate of cell in model of liststore
+  Returns:
+    None '''
+  def add2table_for_sfc(self, row, column, model, user_data, i_column_place):
+    model[row][i_column_place + 2 - 1] = user_data
+    if model[row][column] != OPTION_TEXT_COMBOBOX:
+      model[row][column] = model[row][column].split('-')[0].strip() + ' - ' + user_data
+    else:
+      model[row][column] = OPTION_TEXT_COMBOBOX
+
+
+  ''' This func addes a new item to liststore, when user add a new host or subnet.
+      and fill columns which are for range or the other
+      This is only used by edited_table.
+    Keywords:
+      model - model of liststore
+      type_table - type of liststore 
+    Returns:
+      None '''
+  def add_row_for_new(self, model, type_table):
+    if type_table == HOSTS_TYPE_TABLE:
+      l_tmp = ['']
+      for i in range(COUNT_COLUMN_HOSTS - 1 + 2): # 2 - because range requires 3 column
+        if i == 2 or i == COUNT_COLUMN_HOSTS - 1 or i == COUNT_COLUMN_HOSTS - 1 + 1 or i == 3:
+          l_tmp.append(OPTION_TEXT_COMBOBOX)
+        else:
+          l_tmp.append('')
+      model.append(l_tmp)
+    elif type_table == SUBNETS_TYPE_TABLE:
+      l_tmp = ['']
+      for i in range(COUNT_COLUMN_SUBNETS - 1 + 2): # 2 - because range requires 3 column
+        if i == 1 or i == COUNT_COLUMN_SUBNETS - 1 or i == COUNT_COLUMN_SUBNETS - 1 + 1:
+          l_tmp.append(OPTION_TEXT_COMBOBOX)
+        else:
+          l_tmp.append('')
+      model.append(l_tmp)
+
+
+  ''' This func gets cellcombobox and iterator of last position.
+      This is only used by edited_table.
+    Keywords:
+      s_name_object - name of cellcombobox object
+    Returns:
+      b_'some name' - everytime True
+      cellcombobox
+      iterator of cellcombobox '''
+  def get_cellcombobox(self, s_name_object):
+    iter_some = None
+    if s_name_object == 'for_subnets_range':
+      iter_some = self.iter_combo_srange
+    elif s_name_object == 'for_hosts_range':
+      iter_some = self.iter_combo_range
+    elif s_name_object == 'for_combo':
+      iter_some = self.iter_first_combo
+    elif s_name_object == 'for_hosts_fa':
+      iter_some = self.iter_combo_fa
+    return True, self.builder.get_object(s_name_object), iter_some
+
+
+  ''' This func tests input string.
+    Keywords:
+      column - one of coordinates of place in model of liststore
+      type_table - type of liststore
+      string - input string which is tested by this func.
+    Returns:
+      True - when input string is correct, False - when input string is incorrect. '''
+  def test_correct_input(self, column, type_table, string):
+    # check table of SUBNETS
+    if type_table == SUBNETS_TYPE_TABLE:
+      if column < 3: # all columns from 0 to 2 which are ip address
+        if self.check_string_use_pattern(string, StringStart() + self.our_parser.ip + StringEnd()) == '':
+          if string != OPTION_TEXT_COMBOBOX:
+            try:
+              raise Promt('You have typed incorrect data!\nPattern: 127.0.0.1')
+            except:
+              return False
+      if column == 3 or column == 4:
+        if self.check_string_use_pattern(string, StringStart() + self.our_parser.number + StringEnd()) == '':
+          try:
+            raise Promt('You have typed incorrect data!\nPattern: 7200')
+          except:
+            return False
+
+
+    # check table of HOSTS
+    if type_table == HOSTS_TYPE_TABLE:
+      if column == 1: # check cell of mac address
+        if self.check_string_use_pattern(string, StringStart() + self.our_parser.mac + StringEnd()) == '':
+          try:
+            raise Promt('You have typed incorrect data!\nPattern: 00:f5:12:00:01:a1')
+          except:
+            return False
+      if column == 3 or column == 4: # they are ip address
+        if self.check_string_use_pattern(string, StringStart() + self.our_parser.ip + StringEnd()) == '':
+          if string != OPTION_TEXT_COMBOBOX:
+            try:
+              raise Promt('You have typed incorrect data!\nPattern: 127.0.0.1')
+            except:
+              return False
+
+    # check table of GENERAL
+    if type_table == GENERAL_TYPE_TABLE:
+      if column == 2 or column == 3:
+        if self.check_string_use_pattern(string, StringStart() + self.our_parser.number + StringEnd()) == '':
+          try:
+            raise Promt('You have typed incorrect data!\nPattern: 7200')
+          except:
+            return False
+
+
+    return True
+
+
+  ''' This func checks the similarity of the pattern. 
+      Pattern is got from class Parser.
+    Keywords: 
+      string - input string
+      pattern - pattern of correct string
+    Returns:
+      if string is correct then func will return it
+      else it will return '' '''
+  def check_string_use_pattern(self, string, pattern):
+    s_parse_result = pattern.searchString(string)
+    if s_parse_result:
+      return s_parse_result[0][0]
+    else:
+      return ''
+
+
+  ''' This func is handler events of editing cells.
+      This func makes many interesting things!!!!!!!!!
+  Keywords arduments:
+    row - one of coordinates of place in model of liststore
+    user_data - this is added by this func
+    model - model of liststore
+    combo_model - model of cellcombobox
+    column - one of coordinates of place in model of liststore
+    type_table - type of liststore 
+  Returns: 
+    None '''
   def edited_table(self, cell, row, user_data, model, column, type_table):
     b_run = False
     b_hrange_from = False
@@ -449,6 +668,12 @@ class Main:
     b_srange_from = False
     b_srange_to = False
 
+ 
+    # finding incorrect data
+    if user_data != '' and self.test_correct_input(column, type_table, user_data) == False:
+      return
+
+    # catching event when name of host or subnet is empty
     if column != 0 and model[row][0] == '':
       if user_data != '' and user_data != OPTION_TEXT_COMBOBOX:
         try:
@@ -456,55 +681,42 @@ class Main:
         except:
           return
 
-    if type_table != GENERAL_TYPE_TABLE and user_data != '' and column == 0:
-      # for adding a new item
-      # fill columns which are for range
-      if type_table == HOSTS_TYPE_TABLE:
-        l_tmp = ['']
-        for i in range(COUNT_COLUMN_HOSTS - 1 + 2): # 2 - because range require 3 column
-          if i == 2 or i == COUNT_COLUMN_HOSTS - 1 or i == COUNT_COLUMN_HOSTS - 1 + 1 or i == 3:
-            l_tmp.append(OPTION_TEXT_COMBOBOX)
-          else:
-            l_tmp.append('')
-        model.append(l_tmp)
-      elif type_table == SUBNETS_TYPE_TABLE:
-        l_tmp = ['']
-        for i in range(COUNT_COLUMN_SUBNETS - 1 + 2): # 2 - because range require 3 column
-          if i == 1 or i == COUNT_COLUMN_SUBNETS - 1 or i == COUNT_COLUMN_SUBNETS - 1 + 1:
-            l_tmp.append(OPTION_TEXT_COMBOBOX)
-          else:
-            l_tmp.append('')
-        model.append(l_tmp)
+    # for adding a new item
+    # fill columns which are for range or the other
+    if type_table != GENERAL_TYPE_TABLE and user_data != '' and column == 0 and model[row][column] == '':
+      self.add_row_for_new(model, type_table)
+
+    # save a new host or subnet in global dict
+    if type_table == HOSTS_TYPE_TABLE and column == 0 and user_data != model[row][column]:
+      # memorizing data in common dictionary
+      model[row][column] = user_data
+      self.memorize_data_in_common_dict(row, 3, model, self.builder.get_object("for_hosts_range"), type_table)
+      self.memorize_data_in_common_dict(row, 4, model, self.builder.get_object("for_hosts_fa"), type_table)
+    elif type_table == SUBNETS_TYPE_TABLE and user_data != model[row][column]:
+      if column == 0 or column == 1:
+        # memorizing data in common dictionary
+        model[row][column] = user_data
+        self.memorize_data_in_common_dict(row, 2, model, self.builder.get_object("for_subnets_range"), type_table)
+
 
     # detecting range's cells and save this information
     if self.builder.get_object("subnetscellrenderertext3_1") == cell:
-      b_srange_from = True
-      combo_model = self.builder.get_object("for_subnets_range")
-      iter_some = self.iter_combo_srange
+      b_srange_from, combo_model, iter_some= self.get_cellcombobox("for_subnets_range")
     if self.builder.get_object("subnetscellrenderertext3_2") == cell:
-      b_srange_to = True
-      combo_model = self.builder.get_object("for_subnets_range")
-      iter_some = self.iter_combo_srange
+      b_srange_to, combo_model, iter_some = self.get_cellcombobox("for_subnets_range")
+
     # detecting range's cells and save this information
     if self.builder.get_object("hostscellrenderertext4_1") == cell:
-      b_hrange_from = True
-      combo_model = self.builder.get_object("for_hosts_range")
-      iter_some = self.iter_combo_range
+      b_hrange_from, combo_model, iter_some = self.get_cellcombobox("for_hosts_range")
     if self.builder.get_object("hostscellrenderertext4_2") == cell:
-      b_hrange_to = True
-      combo_model = self.builder.get_object("for_hosts_range")
-      iter_some = self.iter_combo_range
+      b_hrange_to, combo_model, iter_some = self.get_cellcombobox("for_hosts_range")
 
     # handling situation when working with first_combo_box
     if type_table == GENERAL_TYPE_TABLE and column == 4:
-      combo_model = self.builder.get_object("for_combo")
-      iter_some = self.iter_first_combo
-      b_run = True
+      b_run, combo_model, iter_some = self.get_cellcombobox("for_combo")
     # handling situation when working with first_hosts_fa
     if type_table == HOSTS_TYPE_TABLE and column == 4:
-      combo_model = self.builder.get_object("for_hosts_fa")
-      iter_some = self.iter_combo_fa
-      b_run = True
+      b_run ,combo_model, iter_some = self.get_cellcombobox("for_hosts_fa")
 
     if b_hrange_from == True or b_hrange_to == True or b_srange_from == True or b_srange_to == True:
       if b_hrange_from == True:
@@ -546,7 +758,6 @@ class Main:
               elif b_srange_from == True or b_srange_to == True:
                 model[row][COUNT_COLUMN_SUBNETS + 1 - 1] = OPTION_TEXT_COMBOBOX
                 model[row][COUNT_COLUMN_SUBNETS + 2 - 1] = OPTION_TEXT_COMBOBOX
-
               model[row][column] = OPTION_TEXT_COMBOBOX
               break
 
@@ -567,31 +778,7 @@ class Main:
             iter_tmp = combo_model.iter_next(iter_tmp)
 
     if b_run == True:
-      if model[row][column] == OPTION_TEXT_COMBOBOX and user_data != OPTION_TEXT_COMBOBOX:
-        if user_data != '':
-          # deleting OPTION_TEXT_COMBOBOX
-          combo_model.remove(iter_some)
-          combo_model.append([user_data])
-          # adding OPTION_TEXT_COMBOBOX
-          # memorizing iterator of combo model to insert other items
-          iter_some = combo_model.append([OPTION_TEXT_COMBOBOX])
-      else:
-        # finding our items
-        iter_tmp = combo_model.get_iter_first()
-        for k in range(len(combo_model)):
-          if combo_model.get_value(iter_tmp, 0) == model[row][column] and model[row][column] != OPTION_TEXT_COMBOBOX:
-            combo_model.remove(iter_tmp)
-            # deleting item when user enter empty string
-            if user_data != '':
-              # deleting OPTION_TEXT_COMBOBOX
-              combo_model.remove(iter_some)
-              combo_model.append([user_data])
-              # adding OPTION_TEXT_COMBOBOX
-              # memorizing iterator of combo model to insert other items
-              iter_some = combo_model.append([OPTION_TEXT_COMBOBOX])
-            break
-          else:
-            iter_tmp = combo_model.iter_next(iter_tmp)
+      iter_some = self.add2table_liststore(model, combo_model, row, column, user_data, iter_some)
 
     # memorizing last iterator
     if type_table == GENERAL_TYPE_TABLE and column == 4:
@@ -607,36 +794,16 @@ class Main:
       # memorizing data in common dictionary
       self.memorize_data_in_common_dict(row, column, model, combo_model, type_table)
 
+    # changing a cell
     if user_data != '':
-      # changing a cell
       if b_hrange_from == True: # first cell of host's range
-        model[row][COUNT_COLUMN_HOSTS + 1 - 1] = user_data
-        if model[row][column] != OPTION_TEXT_COMBOBOX:
-          model[row][column] = user_data + ' - ' + model[row][column].split('-')[1].strip()
-        else:
-          model[row][column] = OPTION_TEXT_COMBOBOX
-
+        self.add2table_for_ffc(row, column, model, user_data, COUNT_COLUMN_HOSTS)
       elif b_hrange_to == True: # second cell of host's range
-        model[row][COUNT_COLUMN_HOSTS + 2 - 1] = user_data
-        if model[row][column] != OPTION_TEXT_COMBOBOX:
-          model[row][column] = model[row][column].split('-')[0].strip() + ' - ' + user_data
-        else:
-          model[row][column] = OPTION_TEXT_COMBOBOX
-
+        self.add2table_for_sfc(row, column, model, user_data, COUNT_COLUMN_HOSTS)
       elif b_srange_from == True: # first cell of subnet's range
-        model[row][COUNT_COLUMN_SUBNETS + 1 - 1] = user_data
-        if model[row][column] != OPTION_TEXT_COMBOBOX:
-          model[row][column] = user_data + ' - ' + model[row][column].split('-')[1].strip()
-        else:
-          model[row][column] = OPTION_TEXT_COMBOBOX
-
+        self.add2table_for_ffc(row, column, model, user_data, COUNT_COLUMN_SUBNETS)
       elif b_srange_to == True: # second cell of subnet's range
-        model[row][COUNT_COLUMN_SUBNETS + 2 - 1] = user_data
-        if model[row][column] != OPTION_TEXT_COMBOBOX:
-          model[row][column] = model[row][column].split('-')[0].strip() + ' - ' + user_data
-        else:
-          model[row][column] = OPTION_TEXT_COMBOBOX
-
+        self.add2table_for_sfc(row, column, model, user_data, COUNT_COLUMN_SUBNETS)
       else: # other cell
         model[row][column] = user_data
     elif b_run == True or b_hrange_from == True or b_hrange_to == True or b_srange_from == True or b_srange_to == True:
@@ -834,8 +1001,8 @@ class Main:
 
   # func is for test some event
   def save(self, widget):
-#    self.print_to_file(sys.argv[1], self.get_global_dict_from_cells(), self.get_subnets_dict_from_cells(), self.get_hosts_dict_from_cells())
-    self.print_to_file("new_new_out.txt", self.get_global_dict_from_cells(), self.get_subnets_dict_from_cells(), self.get_hosts_dict_from_cells())
+    self.print_to_file(sys.argv[1], self.get_global_dict_from_cells(), self.get_subnets_dict_from_cells(), self.get_hosts_dict_from_cells())
+#    self.print_to_file("new_new_out.txt", self.get_global_dict_from_cells(), self.get_subnets_dict_from_cells(), self.get_hosts_dict_from_cells())
 
 
   def start(self, widget):
@@ -1041,8 +1208,8 @@ class Main:
     self.set_handlers_cells(COUNT_COLUMN_HOSTS, "hostscellrenderertext", "for_hosts", HOSTS_TYPE_TABLE)
     self.set_handlers_cells(COUNT_COLUMN_SUBNETS, "subnetscellrenderertext", "for_subnets", SUBNETS_TYPE_TABLE)
 
-#    s_text_dhcp = self.our_parser.get_text_from_file( sys.argv[1] )
-    s_text_dhcp = self.our_parser.get_text_from_file("../new_out.txt")
+    s_text_dhcp = self.our_parser.get_text_from_file( sys.argv[1] )
+#    s_text_dhcp = self.our_parser.get_text_from_file("../new_out.txt")
 
     self.our_parser.get_global_parameters_from_text( s_text_dhcp )
     self.fill_general_table( self.our_parser.d_global_parameters )
