@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 
 # Author: Maxim Perov (mperov@okbsapr.ru)
 
@@ -19,29 +21,26 @@ OPTION_TEXT_COMBOBOX = "your additions"
 NUMBER_HOSTS_RANGE = 4
 NUMBER_SUBNETS_RANGE = 3
 
+# This variable is used to define service which works with DHCP server.
+NAME_DHCP_SERVICE = "isc-dhcp-server"
 
-class Promt(Exception):
+''' This class is generator WARNING window. '''
+class Prompt(Exception):
   def __init__(self, value):
     self.value = value
     # Create new GTK dialog with all the fixings
     prompt = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, value)
     # Set title of dialog
-    prompt.set_title("Prompt")
+    prompt.set_title("Предупреждение")
     # Show all widgets in prompt
     prompt.show_all()
     # Run dialog until user clicks OK
     if prompt.run() == gtk.RESPONSE_OK:
       # Destory prompt
       prompt.destroy()
-'''
-try:
-  i = 0
-  if i == 0:
-    raise Promt('Division by zero!')
-except:
-  Nothing
-'''
 
+''' This class is parser settings.
+    Some func looks for some information in the text and gets dicts. '''
 class Parser:
   digits = "0123456789"
   colon,semi,period,comma,lbrace,rbrace,quote = map(Literal,':;.,{}"')
@@ -69,7 +68,14 @@ class Parser:
   d_subnets = { }
   d_global_parameters = { }
 
-  
+
+  ''' This func gets string which is similar to pattern.
+    Keywords:
+      l_some - list is contained words.
+      pattern - similar string
+    Returns:
+      None
+      but result is saved to self.d_hosts '''
   def get_string_of_pattern_for_host(self, l_some, pattern):
     for s_word in l_some:
       grammar_word = pattern
@@ -78,6 +84,12 @@ class Parser:
         self.d_hosts[l_some[1]][group[0]] = group[1]
 
 
+  ''' This func searches hosts and gets dict, which contains hosts.
+    Keywords:
+      s_text_dhcp - text settings dhcp server. 
+    Returns:
+      None
+      but dict is placed in d_hosts of Parser. '''
   def get_hosts_from_text(self, s_text_dhcp):
     # Put the grammar together to define a host declaration
     parse_host =  Literal('host') + self.fqdn + self.lbrace + (self.note & self.anything) + self.rbrace
@@ -117,10 +129,16 @@ class Parser:
       self.get_string_of_pattern_for_host(l_result, self.ddns_hostname)
       # get string with DDNS domain name
       self.get_string_of_pattern_for_host(l_result, self.ddns_domainname)
-
       # here you can add your code
 
 
+  ''' This func gets string which is similar to pattern.
+    Keywords:
+      l_some - list is contained words.
+      pattern - similar string
+    Returns:
+      None
+      but result is saved to self.d_subnets '''
   def get_string_of_pattern_for_subnets(self, l_some, s_pattern):
     for s_word in l_some:
       grammar_word = StringStart() + Literal(s_pattern) + self.number
@@ -129,6 +147,12 @@ class Parser:
         self.d_subnets[l_some[1] + ':' + l_some[3]][group_dft[0]] = group_dft[1]
 
 
+  ''' This func searches subnets and gets dict, which contains subnets.
+    Keywords:
+      s_text_dhcp - text settings dhcp server. 
+    Returns:
+      None
+      but dict is placed in d_subnets of Parser. '''
   def get_subnets_from_text(self, s_text_dhcp):
     # Put the grammar together to define a subnet declaration
     parse_subnet = Literal('subnet') + self.ip + Literal('netmask') + self.ip + self.lbrace + (self.note & self.anything) + self.rbrace
@@ -153,16 +177,28 @@ class Parser:
       self.get_string_of_pattern_for_subnets(l_result, 'default-lease-time')
       # get string with max-lease-time 
       self.get_string_of_pattern_for_subnets(l_result, 'max-lease-time')
-
       # here you can add your code
 
+
+  ''' This func gets string which is similar to pattern.
+    Keywords:
+      l_some - list is contained words.
+      pattern - similar string
+    Returns:
+      None
+      but result is saved to self.d_global_parameters '''
   def get_string_of_pattern_for_global(self, s_some, s_pattern, pp_pattern): # pp = pyparsing
     parse_global_parameter = StringStart() + Literal(s_pattern) + pp_pattern
     parse_line_results = parse_global_parameter.searchString(s_some)
     if len(parse_line_results) > 0:
       self.d_global_parameters[parse_line_results[0][0]] = parse_line_results[0][1]
 
-
+  ''' This func searches global parameters and gets dict, which contains global parameters.
+    Keywords:
+      s_text_dhcp - text settings dhcp server. 
+    Returns:
+      None
+      but dict is placed in d_global_parameters of Parser. '''
   def get_global_parameters_from_text(self, s_text_dhcp):
     i_count_lbrace = 0
     i_count_rbrace = 0
@@ -190,10 +226,8 @@ class Parser:
       if i_count_lbrace == i_count_rbrace:
         # find global parameter (default_lease-time)
         self.get_string_of_pattern_for_global(s_line, 'default-lease-time', self.number)
-
         # find (option domain-name)
         self.get_string_of_pattern_for_global(s_line, 'option domain-name', Word(alphanums + "\".@"))
-
         # find (max-lease-time)
         self.get_string_of_pattern_for_global(s_line, 'max-lease-time', self.number)
 
@@ -212,13 +246,15 @@ class Parser:
         # find (log-facility)
         self.get_string_of_pattern_for_global(s_line, 'log-facility', Word(alphanums))
 
-
+  ''' This func gets text from file. '''
   def get_text_from_file(self, s_file_name):
     f_dhcp = open(s_file_name, 'rU')
     return f_dhcp.read()
 
 
-######################################################## MAIN CLASS
+''' This class contains handlers some events, 
+    some functiones which maps dict to table and back and
+    func is printed settings to file. '''
 class Main:
 
   builder = None
@@ -229,11 +265,16 @@ class Main:
   iter_combo_range = None
   iter_combo_srange = None
 
-
+  ''' Handler exit from program. '''
   def exit(self, widget):
     sys.exit(0)
 
-
+  ''' This func printes all dicts to file.
+    Keywords:
+      s_file_name - name of output file.
+      d_* - dicts which are printed to file
+    Returns:
+      None '''
   def print_to_file(self, s_file_name, d_global_parameters, d_subnets, d_hosts):
     f_out = open(s_file_name,"w")
     # print global parameters
@@ -313,7 +354,13 @@ class Main:
     f_out.close()
 
 
-  # get global dict from cells
+  ''' This func gets dict, which contains global parameters.
+      It doesn't only gets from cells and it gets from for_combo.
+      It is necessary to get option domain-name-servers.
+    Keywords:
+      None
+    Returns:
+      dict containing global parameters '''
   def get_global_dict_from_cells(self):
     d_global_param = { }
     for i in range(COUNT_COLUMN_GENERAL):
@@ -339,8 +386,14 @@ class Main:
           d_global_param[ s_column_title ] = s_tmp
     return d_global_param
 
-
-  # get global dict from cells		
+	
+  ''' This func gets dict, which contains parameters of hosts.
+      It doesn't only gets from cells and it gets from Parser::d_hosts.
+      It is necessary to get fixed-address and range.
+    Keywords:
+      None
+    Returns:
+      dict containing parameters of hosts '''
   def get_hosts_dict_from_cells(self):
     d_hosts_param = { }
     hosts_liststore = self.builder.get_object("for_hosts")
@@ -366,7 +419,13 @@ class Main:
     return d_hosts_param
 
 
-  # get global dict from cells
+  ''' This func gets dict, which contains parameters of subnets.
+      It doesn't only gets from cells and it gets from Parser::d_subnets.
+      It is necessary to get range.
+    Keywords:
+      None
+    Returns:
+      dict containing parameters of subnets '''
   def get_subnets_dict_from_cells(self):
     d_subnets_param = { }
     subnets_liststore = self.builder.get_object("for_subnets")
@@ -391,8 +450,17 @@ class Main:
       i = i + 1
     return d_subnets_param
 
-  # this func saves special parameters in dicts of Parser
-  # e.g. range, fixed-address, etc
+
+  ''' This func saves special parameters in dicts of Parser
+      e.g. range, fixed-address, etc.
+      This func is only used by edited_table.
+    Keywords:
+      row, column - coordinates of place in model of liststore
+      model - model of liststore
+      combo_model - model of cellcombobox
+      type_table - type of liststore
+    Returns:
+      None '''
   def memorize_data_in_common_dict(self, row, column, model, combo_model, type_table):
     if type_table == HOSTS_TYPE_TABLE:
       s_host = model[row][0]
@@ -411,7 +479,6 @@ class Main:
           l_tmp.append(s_tmp)
         iter_tmp = combo_model.iter_next(iter_tmp)
 
-################ FIRST STEP FOR MAKING TEST OF INPUT DATA ##############
       if s_host == '':
         return
       if l_tmp:
@@ -443,7 +510,6 @@ class Main:
 
         iter_tmp = combo_model.iter_next(iter_tmp)
 
-################ FIRST STEP FOR MAKING TEST OF INPUT DATA ##############
       if s_sub == '':
         return
 
@@ -456,19 +522,18 @@ class Main:
           self.our_parser.d_subnets[s_sub] = { }
         self.our_parser.d_subnets[s_sub][s_column_title] = l_tmp
 
-
-  
+ 
   ''' This func is for fixed-address or option domain-name-servers.
       It addes something to liststore and its cellcombobox.
       This is only used by edited_table.
-  Keywords arduments:
-    model - model of liststore
-    combo_model - model of cellcombobox
-    row, column - coordinates of place in model of liststore
-    user_data - this is added by this func
-    iter_some - position of iterator of cellcombobox 
-  Returns:
-    iterator of cellcombobox '''
+    Keywords arduments:
+      model - model of liststore
+      combo_model - model of cellcombobox
+      row, column - coordinates of place in model of liststore
+      user_data - this is added by this func
+      iter_some - position of iterator of cellcombobox 
+    Returns:
+      iterator of cellcombobox '''
   def add2table_liststore(self, model, combo_model, row, column, user_data, iter_some):
     if model[row][column] == OPTION_TEXT_COMBOBOX and user_data != OPTION_TEXT_COMBOBOX:
       if user_data != '':
@@ -499,13 +564,13 @@ class Main:
 
   ''' This func addes something to the first face cell of range and to cell for cellcombobox.
       This is only used by edited_table.
-  Keywords arduments:
-    row, column - coordinates of place in model of liststore
-    model - model of liststore
-    user_data - this is added by this func
-    i_column_place - face coordinate of cell in model of liststore
-  Returns:
-    None '''
+    Keywords arduments:
+      row, column - coordinates of place in model of liststore
+      model - model of liststore
+      user_data - this is added by this func
+      i_column_place - face coordinate of cell in model of liststore
+    Returns:
+      None '''
   def add2table_for_ffc(self, row, column, model, user_data, i_column_place):
     model[row][i_column_place + 1 - 1] = user_data
     if model[row][column] != OPTION_TEXT_COMBOBOX:
@@ -516,13 +581,13 @@ class Main:
 
   ''' This func addes something to the second face cell of range and to cell for cellcombobox.
       This is only used by edited_table.
-  Keywords arduments:
-    row, column - coordinates of place in model of liststore
-    model - model of liststore
-    user_data - this is added by this func
-    i_column_place - face coordinate of cell in model of liststore
-  Returns:
-    None '''
+    Keywords arduments:
+      row, column - coordinates of place in model of liststore
+      model - model of liststore
+      user_data - this is added by this func
+      i_column_place - face coordinate of cell in model of liststore
+    Returns:
+      None '''
   def add2table_for_sfc(self, row, column, model, user_data, i_column_place):
     model[row][i_column_place + 2 - 1] = user_data
     if model[row][column] != OPTION_TEXT_COMBOBOX:
@@ -593,30 +658,29 @@ class Main:
         if self.check_string_use_pattern(string, StringStart() + self.our_parser.ip + StringEnd()) == '':
           if string != OPTION_TEXT_COMBOBOX:
             try:
-              raise Promt('You have typed incorrect data!\nPattern: 127.0.0.1')
+              raise Prompt('Вы ввели некорректные данные!\nПример коррекного ввода: 127.0.0.1')
             except:
               return False
       if column == 3 or column == 4:
         if self.check_string_use_pattern(string, StringStart() + self.our_parser.number + StringEnd()) == '':
           try:
-            raise Promt('You have typed incorrect data!\nPattern: 7200')
+            raise Prompt('Вы ввели некорректные данные!\nПример коррекного ввода: 7200')
           except:
             return False
-
 
     # check table of HOSTS
     if type_table == HOSTS_TYPE_TABLE:
       if column == 1: # check cell of mac address
         if self.check_string_use_pattern(string, StringStart() + self.our_parser.mac + StringEnd()) == '':
           try:
-            raise Promt('You have typed incorrect data!\nPattern: 00:f5:12:00:01:a1')
+            raise Prompt('Вы ввели некорректные данные!\nПример коррекного ввода: 00:f5:12:00:01:a1')
           except:
             return False
       if column == 3 or column == 4: # they are ip address
         if self.check_string_use_pattern(string, StringStart() + self.our_parser.ip + StringEnd()) == '':
           if string != OPTION_TEXT_COMBOBOX:
             try:
-              raise Promt('You have typed incorrect data!\nPattern: 127.0.0.1')
+              raise Prompt('Вы ввели некорректные данные!\nПример коррекного ввода: 127.0.0.1')
             except:
               return False
 
@@ -625,10 +689,9 @@ class Main:
       if column == 2 or column == 3:
         if self.check_string_use_pattern(string, StringStart() + self.our_parser.number + StringEnd()) == '':
           try:
-            raise Promt('You have typed incorrect data!\nPattern: 7200')
+            raise Prompt('Вы ввели некорректные данные!\nПример коррекного ввода: 7200')
           except:
             return False
-
 
     return True
 
@@ -649,17 +712,34 @@ class Main:
       return ''
 
 
+  ''' This func is deleter row, when first column is empry.
+      This is only used by edited_table.
+    Keywords:
+      model - model of liststore
+      row - row is needed to delete
+      type_table - type of liststore
+    Returns:
+      None '''
+  def delete_row(self, model, row, type_table):
+    if type_table == HOSTS_TYPE_TABLE:
+      i_max_column = COUNT_COLUMN_HOSTS
+    else:
+      i_max_column = COUNT_COLUMN_SUBNETS
+    iter_last_row = model.get_iter_from_string(row)
+    model.remove(iter_last_row)
+
+
   ''' This func is handler events of editing cells.
       This func makes many interesting things!!!!!!!!!
-  Keywords arduments:
-    row - one of coordinates of place in model of liststore
-    user_data - this is added by this func
-    model - model of liststore
-    combo_model - model of cellcombobox
-    column - one of coordinates of place in model of liststore
-    type_table - type of liststore 
-  Returns: 
-    None '''
+    Keywords arduments:
+      row - one of coordinates of place in model of liststore
+      user_data - this is added by this func
+      model - model of liststore
+      combo_model - model of cellcombobox
+      column - one of coordinates of place in model of liststore
+      type_table - type of liststore 
+    Returns: 
+      None '''
   def edited_table(self, cell, row, user_data, model, column, type_table):
     b_run = False
     b_hrange_from = False
@@ -667,19 +747,30 @@ class Main:
     iter_some = None
     b_srange_from = False
     b_srange_to = False
-
  
-    # finding incorrect data
-    if user_data != '' and self.test_correct_input(column, type_table, user_data) == False:
-      return
-
     # catching event when name of host or subnet is empty
     if column != 0 and model[row][0] == '':
       if user_data != '' and user_data != OPTION_TEXT_COMBOBOX:
         try:
-          raise Promt('You must add something to\n the first column!')
+          raise Prompt('Вначале необходимо заполнить\nпервый столбец!')
         except:
           return
+    
+    # catching event when mask of subnet is empty
+    if type_table == SUBNETS_TYPE_TABLE and column != 0 and column != 1 and model[row][1] == '':
+      if user_data != '' and user_data != OPTION_TEXT_COMBOBOX:
+        try:
+          raise Prompt('Также необходимо заполнить\nвторой столбец!')
+        except:
+          return
+    # finding incorrect data
+    if user_data != '' and self.test_correct_input(column, type_table, user_data) == False:
+      return
+
+    # clearing table without first column
+    if column == 0 and user_data.strip() == '' and type_table != GENERAL_TYPE_TABLE and model[row][column] != '':
+      self.delete_row(model, row, type_table)
+      return
 
     # for adding a new item
     # fill columns which are for range or the other
@@ -698,10 +789,9 @@ class Main:
         model[row][column] = user_data
         self.memorize_data_in_common_dict(row, 2, model, self.builder.get_object("for_subnets_range"), type_table)
 
-
     # detecting range's cells and save this information
     if self.builder.get_object("subnetscellrenderertext3_1") == cell:
-      b_srange_from, combo_model, iter_some= self.get_cellcombobox("for_subnets_range")
+      b_srange_from, combo_model, iter_some = self.get_cellcombobox("for_subnets_range")
     if self.builder.get_object("subnetscellrenderertext3_2") == cell:
       b_srange_to, combo_model, iter_some = self.get_cellcombobox("for_subnets_range")
 
@@ -812,7 +902,12 @@ class Main:
       model[row][column] = ''
 
 
-  # convert from list to pattern of string
+  ''' This func convertes from list to pattern of string.
+      Divier in list words is ,
+    Keywords:
+      l_something - list is converted.
+    Returns:
+      resulting string '''
   def parser_from_list_single(self, l_something):
     s_something = ''
     for word in l_something:
@@ -820,7 +915,12 @@ class Main:
     return s_something[0: len( s_something ) - 3]
 
 
-  # convert from list to pattern of string
+  ''' This func convertes from list to pattern of string.
+      Diviers in list words are ; and -
+    Keywords:
+      l_something - list is converted.
+    Returns:
+      resulting string '''
   def parser_from_list_twice(self, l_something):
     s_something = ''
     for k in range(len(l_something)):
@@ -831,7 +931,12 @@ class Main:
         s_something = s_something + '  -  '
     return s_something
 
-  # from dict to liststore for global parameters 
+
+  ''' This func fills general table. It gets parameters from dict and places them to liststore.
+    Keywords:
+      d_global_param - dict which contains global parameters.
+    Returns:
+      None '''
   def fill_general_table(self, d_global_param):
     for i in range(COUNT_COLUMN_GENERAL):
       string = 'generaltreeviewcolumn' + str(i+1)
@@ -864,7 +969,12 @@ class Main:
         except:
           general_liststore[0][i] = ''
 
-  # from dict to liststore for hosts
+
+  ''' This func fills hosts table. It gets parameters from dict and places them to liststore.
+    Keywords:
+      d_hosts_param - dict which contains parameters of hosts.
+    Returns:
+      None '''
   def fill_hosts_table(self, d_hosts_param):
     hosts_liststore = self.builder.get_object("for_hosts")
     i = 0
@@ -941,8 +1051,11 @@ class Main:
         l_tmp.append('')
     hosts_liststore.append(l_tmp)
 
-
-  # from dict to liststore for subnets
+  ''' This func fills subnets table. It gets parameters from dict and places them to liststore.
+    Keywords:
+      d_subnets_param - dict which contains parameters of subnets.
+    Returns:
+      None '''
   def fill_subnets_table(self, d_subnets_param):
     subnets_liststore = self.builder.get_object("for_subnets")
     i = 0
@@ -999,25 +1112,34 @@ class Main:
         l_tmp.append('')
     subnets_liststore.append(l_tmp)
 
-  # func is for test some event
+
+  ''' This func is handler event when user saves settings. '''
   def save(self, widget):
-    self.print_to_file(sys.argv[1], self.get_global_dict_from_cells(), self.get_subnets_dict_from_cells(), self.get_hosts_dict_from_cells())
-#    self.print_to_file("new_new_out.txt", self.get_global_dict_from_cells(), self.get_subnets_dict_from_cells(), self.get_hosts_dict_from_cells())
-
-
+#    self.print_to_file(sys.argv[1], self.get_global_dict_from_cells(), self.get_subnets_dict_from_cells(), self.get_hosts_dict_from_cells())
+    self.print_to_file("new_new_out.txt", self.get_global_dict_from_cells(), self.get_subnets_dict_from_cells(), self.get_hosts_dict_from_cells())
+  
+  ''' This func is handler event when user wishes to start DHCP server. '''
   def start(self, widget):
-    os.system("service isc-dhcp-server start")
-
-
+    os.system("service " + NAME_DHCP_SERVICE + " start")
+  
+  ''' This func is handler event when user wishes to restart DHCP server. '''
   def restart(self, widget):
-    os.system("service isc-dhcp-server restart")
-
-
+    os.system("service " + NAME_DHCP_SERVICE + " restart")
+  
+  ''' This func is handler event when user wishes to stop DHCP server.'''
   def stop(self, widget):
-    os.system("service isc-dhcp-server stop")
+    os.system("service " + NAME_DHCP_SERVICE + " stop")
 
 
   # func is for setting handlers
+  ''' This func sets handlers for cells. 
+    Keywords:
+      count_column - count column at table
+      s_name_ren - name of column 
+      s_name_liststore - object name of liststore 
+      type_table - type of liststore
+    Returns:
+      None '''
   def set_handlers_cells(self, count_column, s_name_ren, s_name_liststore, type_table):
     liststore = self.builder.get_object(s_name_liststore)
     for i in range(count_column):
@@ -1031,6 +1153,11 @@ class Main:
         self.builder.get_object(string).connect('edited', self.edited_table, liststore, i, type_table)
 
 
+  ''' This func is handler event when user edites cellcombobox for option domain-name-servers.
+    Keywords:
+      cellrender - the object is edited.
+      path - path to get iterator of cellcombobox
+      new_text - text is added to cellcombobox '''
   def cellcombo_edited(self, cellrenderer, path, new_text):
     treeviewgeneral = self.builder.get_object("treeviewgeneral")
     treeviewmodel = treeviewgeneral.get_model()
@@ -1038,6 +1165,11 @@ class Main:
     treeviewmodel.set_value(iter, 4, new_text)
 
 
+  ''' This func is handler event when user edites cellcombobox for hosts fixed-address.
+    Keywords:
+      cellrender - the object is edited.
+      path - path to get iterator of cellcombobox
+      new_text - text is added to cellcombobox '''
   def cellcombo_edited_hfa(self, cellrenderer, path, new_text):
     treeviewgeneral = self.builder.get_object("treeviewhosts")
     treeviewmodel = treeviewgeneral.get_model()
@@ -1045,6 +1177,11 @@ class Main:
     treeviewmodel.set_value(iter, 4, new_text)
 
 
+  ''' This func is handler event when user edites cellcombobox for hosts range.
+    Keywords:
+      cellrender - the object is edited.
+      path - path to get iterator of cellcombobox
+      new_text - text is added to cellcombobox '''
   def cellcombo_edited_hrange(self, cellrenderer, path, new_text):
     treeviewgeneral = self.builder.get_object("treeviewhosts")
     treeviewmodel = treeviewgeneral.get_model()
@@ -1057,6 +1194,12 @@ class Main:
       treeviewmodel.set_value(iter, COUNT_COLUMN_HOSTS + 1 - 1, OPTION_TEXT_COMBOBOX)
       treeviewmodel.set_value(iter, COUNT_COLUMN_HOSTS + 2 - 1, OPTION_TEXT_COMBOBOX)
 
+
+  ''' This func is handler event when user edites cellcombobox for subnets range.
+    Keywords:
+      cellrender - the object is edited.
+      path - path to get iterator of cellcombobox
+      new_text - text is added to cellcombobox '''
   def cellcombo_edited_srange(self, cellrenderer, path, new_text):
     treeviewgeneral = self.builder.get_object("treeviewsubnets")
     treeviewmodel = treeviewgeneral.get_model()
@@ -1070,16 +1213,22 @@ class Main:
       treeviewmodel.set_value(iter, COUNT_COLUMN_SUBNETS + 2 - 1, OPTION_TEXT_COMBOBOX)
 
 
-
-
+  ''' This func is handler event when user click on table of hosts.
+      It loads cellcomboboxes of fixed-address, range.
+      Because each row has its fixed-address and range.
+    Keywords:
+      selection - it contains list of the tree paths of all selected rows.
+      d_hosts_param - dict for parameters of hosts
+    Returns:
+      None '''
   def hosts_cell_click(self, selection, d_hosts_param):
-################# PROBLEM!!!!!!!!!! ######################################
+
     # get number of row which is selected
     try:
       i_selected_row = selection.get_selected_rows()[1][0][0]
     except:
       return
-###########################################################################
+
     model_table_hosts = self.builder.get_object("for_hosts")
     s_host = model_table_hosts[i_selected_row][0]
     for s_column_title in ["fixed-address", "range"]:
@@ -1117,15 +1266,22 @@ class Main:
       combo_box.set_property("model", combo_model)
 
 
-
+  ''' This func is handler event when user click on table of subnets.
+      It loads cellcombobox of range.
+      Because each row has its range.
+    Keywords:
+      selection - it contains list of the tree paths of all selected rows.
+      d_hosts_param - dict for parameters of subnets
+    Returns:
+      None '''
   def subnets_cell_click(self, selection, d_subnets_param):
-################# PROBLEM!!!!!!!!!! ######################################
+
     # get number of row which is selected
     try:
       i_selected_row = selection.get_selected_rows()[1][0][0]
     except:
       return
-###########################################################################
+
     model_table_subnets = self.builder.get_object("for_subnets")
     s_subnet = model_table_subnets[i_selected_row][0] + ':' + model_table_subnets[i_selected_row][1]
     for s_column_title in ["range"]:
@@ -1158,7 +1314,7 @@ class Main:
       combo_box.set_property("model", combo_model)
 
 
-  # initialize Class
+  ''' Constructor of Main '''
   def __init__(self):
     # here parsing file which has got from parameters of program
     self.our_parser = Parser()
@@ -1208,8 +1364,8 @@ class Main:
     self.set_handlers_cells(COUNT_COLUMN_HOSTS, "hostscellrenderertext", "for_hosts", HOSTS_TYPE_TABLE)
     self.set_handlers_cells(COUNT_COLUMN_SUBNETS, "subnetscellrenderertext", "for_subnets", SUBNETS_TYPE_TABLE)
 
-    s_text_dhcp = self.our_parser.get_text_from_file( sys.argv[1] )
-#    s_text_dhcp = self.our_parser.get_text_from_file("../new_out.txt")
+#    s_text_dhcp = self.our_parser.get_text_from_file( sys.argv[1] )
+    s_text_dhcp = self.our_parser.get_text_from_file("../out.txt")
 
     self.our_parser.get_global_parameters_from_text( s_text_dhcp )
     self.fill_general_table( self.our_parser.d_global_parameters )
