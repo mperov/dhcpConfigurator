@@ -1410,7 +1410,7 @@ class Main:
     self.set_handlers_cells(COUNT_COLUMN_SUBNETS, "subnetscellrenderertext", "for_subnets", SUBNETS_TYPE_TABLE)
 
 #    s_text_dhcp = self.our_parser.get_text_from_file( sys.argv[1] )
-    s_text_dhcp = self.our_parser.get_text_from_file("../out.txt")
+    s_text_dhcp = self.our_parser.get_text_from_file("out.txt")
 
     self.our_parser.get_global_parameters_from_text( s_text_dhcp )
     self.fill_general_table( self.our_parser.d_global_parameters )

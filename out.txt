@@ -1,0 +1,52 @@
+
+
+ddns-update-style  none;
+option domain-name  "example.org";
+max-lease-time  4501;
+default-lease-time  9900;
+option domain-name-servers  ns1.example.org, ns4.example.org, ns3.example.org;
+log-facility  local7;
+
+
+subnet 10.254.239.32 netmask 255.255.255.0 {
+	range 192.168.1.5 192.168.1.11;
+	default-lease-time 600;
+	max-lease-time 7200;
+}
+
+subnet 10.5.5.0 netmask 255.255.255.254 {
+	range 10.5.5.26 10.5.5.30;
+	default-lease-time 600;
+	max-lease-time 7200;
+}
+
+subnet 1.1.1.1 netmask 255.255.255.25 {
+	default-lease-time 1;
+}
+
+host b.foo.bar {
+	hardware ethernet 00:0f:12:34:56:78;
+	fixed-address  192.168.100.20;
+}
+
+host 45 {
+}
+
+host c.foo.bar {
+	hardware ethernet 00:0e:12:34:50:70;
+	ddns-hostname fg;
+	fixed-address  192.168.100.4;
+}
+
+host byaka343nn {
+	hardware ethernet 00:11:22:33:44:55;
+	ddns-hostname a;
+	range 192.168.100.1 192.168.100.5;
+	range 192.168.100.7 192.168.100.99;
+	fixed-address  192.168.100.10,  192.168.200.50;
+	ddns-domainname "foo.bar";
+}
+
+host bbb {
+}
+
